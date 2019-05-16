@@ -133,18 +133,13 @@
     <script>
       var map;
 
-      // Create a new blank array for all the listing markers
       var markers = [];
 
-      // Variable to ensure only one polygon is rendered
       var polygon = null;
 
-      // Create placemarkers array to use in multiple functions to have control
-      // over the number of places that show
       var placeMarkers = [];
 
       function initMap() {
-        // Create a styles array to use with the map.
         var styles = [
           {
             featureType: 'water',
@@ -232,7 +227,6 @@
             document.getElementById('places-search'));
         searchBox.setBounds(map.getBounds());
 
-        //The restaurants shown on the map
         var locations = [
           {title: 'Momoya', location: {lat: 40.763335, lng: -73.986975}},
           {title: 'Mercato', location: {lat: 40.7562838, lng: -73.9936539}},
@@ -257,19 +251,14 @@
           }
         });
 
-        // Style the markers 
+
         var defaultIcon = makeMarkerIcon('0091ff');
 
-        // Create a "highlighted location" marker color for when the user
-        // mouses over the marker
         var highlightedIcon = makeMarkerIcon('FFFF24');
 
-        // The following group uses the location array to create an array of markers on initialize
         for (var i = 0; i < locations.length; i++) {
-          // Get the position from the location array
           var position = locations[i].location;
           var title = locations[i].title;
-          // Create a marker per location, and put into markers array
           var marker = new google.maps.Marker({
             position: position,
             title: title,
@@ -334,7 +323,6 @@
         });
       }
 
-      // This function populates the infowindow when the marker is clicked. 
       function populateInfoWindow(marker, infowindow) {
     
         if (infowindow.marker != marker) {
@@ -372,7 +360,6 @@
         }
       }
 
-      // This function will loop through the markers array and display them all.
       function showListings() {
         var bounds = new google.maps.LatLngBounds();
         // Extend the boundaries of the map for each marker and display the marker
@@ -383,7 +370,6 @@
         map.fitBounds(bounds);
       }
 
-      // This function will loop through the listings and hide them all.
       function hideMarkers(markers) {
         for (var i = 0; i < markers.length; i++) {
           markers[i].setMap(null);
@@ -426,9 +412,7 @@
 
       
       function zoomToArea() {
-        // Initialize the geocoder.
         var geocoder = new google.maps.Geocoder();
-        // Get the address or place that the user entered.
         var address = document.getElementById('zoom-to-area-text').value;
        
         if (address == '') {
@@ -451,10 +435,8 @@
 
       
       function searchWithinTime() {
-        // Initialize the distance matrix service.
         var distanceMatrixService = new google.maps.DistanceMatrixService;
         var address = document.getElementById('search-within-time-text').value;
-        // Check to make sure the place entered isn't blank.
         if (address == '') {
           window.alert('You must enter an address.');
         } else {
@@ -486,8 +468,6 @@
         var maxDuration = document.getElementById('max-duration').value;
         var origins = response.originAddresses;
         var destinations = response.destinationAddresses;
-        // Parse through the results, and get the distance and duration of each.
-        // Then, make sure at least 1 result was found.
         var atLeastOne = false;
         for (var i = 0; i < origins.length; i++) {
           var results = response.rows[i].elements;
@@ -523,15 +503,11 @@
       function displayDirections(origin) {
         hideMarkers(markers);
         var directionsService = new google.maps.DirectionsService;
-        // Get the destination address from the user entered value.
         var destinationAddress =
             document.getElementById('search-within-time-text').value;
-        // Get mode again from the user entered value.
         var mode = document.getElementById('mode').value;
         directionsService.route({
-          // The origin is the passed in marker's position.
           origin: origin,
-          // The destination is user entered address.
           destination: destinationAddress,
           travelMode: google.maps.TravelMode[mode]
         }, function(response, status) {
@@ -557,7 +533,6 @@
         if (places.length == 0) {
           window.alert('We did not find any places matching that search!');
         } else {
-        // For each place, get the icon, name and location.
           createMarkersForPlaces(places);
         }
       }
@@ -588,7 +563,6 @@
             anchor: new google.maps.Point(15, 34),
             scaledSize: new google.maps.Size(25, 25)
           };
-          // Create a marker for each place.
           var marker = new google.maps.Marker({
             map: map,
             icon: icon,
@@ -596,10 +570,8 @@
             position: place.geometry.location,
             id: place.place_id
           });
-          // Create a single infowindow to be used with the place details information
-          // so that only one is open at once.
+
           var placeInfoWindow = new google.maps.InfoWindow();
-          // If a marker is clicked, do a place details search on it in the next function.
           marker.addListener('click', function() {
             if (placeInfoWindow.marker == this) {
               console.log("This infowindow already is on this marker!");
@@ -609,7 +581,6 @@
           });
           placeMarkers.push(marker);
           if (place.geometry.viewport) {
-            // Only geocodes have viewport.
             bounds.union(place.geometry.viewport);
           } else {
             bounds.extend(place.geometry.location);
